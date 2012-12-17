@@ -364,7 +364,7 @@ function GameOver_Draw()
 	if gDeadCops > gDeadHumans then
 		text = "Pussies won! You killed " .. gDeadCops .. " Dicks."
 	elseif gDeadHumans == gDeadCops then
-		text = "All players died. Maybe next season ;-)!"
+		text = "The game ended in a draw. You are all Pussies ;-)"
 	else
 		text = "Dicks won! You killed " .. gDeadHumans .. " pussies."
 	end
