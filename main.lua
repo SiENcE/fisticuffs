@@ -135,9 +135,7 @@ function love.load()
 	kGfx_Arena	= love.graphics.newImage("gfx/arena.png")
 	kGfx_Cop	= love.graphics.newImage("gfx/cops.png")		
 
-	kGfx_Humans = {
-		love.graphics.newImage("gfx/humans.png"),
-	}
+	kGfx_Humans = love.graphics.newImage("gfx/humans.png")
 
 	kGfx_Blood	= love.graphics.newImage("gfx/blood.png")
 	kGfx_DeadBody	= love.graphics.newImage("gfx/deadbody.png")
@@ -165,7 +163,7 @@ function love.load()
 	}
 
 	kGfx_Cloud = love.graphics.newImage("gfx/cloud2.png")
-	kGfx_NewsPaper = love.graphics.newImage("gfx/theend.png")
+	kGfx_Endscreen = love.graphics.newImage("gfx/theend.png")
 	
 --	for i=1,3 do 
 --		MakeCopSquad(30+math.random(0,110),400+math.random(0,110),3,40)
@@ -354,22 +352,39 @@ function love.draw()
 end
 
 function GameOver_Update(dt)
+	if not love.web then
+		if love.keyboard.isDown(" ") then
+			print("reload game")
+			TEsound.stop("backmusic")
+			gIntro = true
+			gGameStarted=false
+			love.filesystem.load("main.lua")() 
+		end
+	end
 end
 
 function GameOver_Draw()
 	TEsound.stop("backmusic", true)
-	love.graphics.draw(kGfx_NewsPaper)
+	love.graphics.draw(kGfx_Endscreen)
 
 	local text = ""
+	local x=200
 	if gDeadCops > gDeadHumans then
 		text = "Pussies won! You killed " .. gDeadCops .. " Dicks."
 	elseif gDeadHumans == gDeadCops then
 		text = "The game ended in a draw. You are all Pussies ;-)"
+		x=x-20
 	else
 		text = "Dicks won! You killed " .. gDeadHumans .. " pussies."
 	end
 
 	love.graphics.setColor(1,1,1,255)
-	love.graphics.printf(text, 120, 600 - 55, 700, "left" )
+	love.graphics.printf(text, x, 545, 700, "left" )
 	love.graphics.setColor(255,255,255,255)
+	if love.web then
+		love.graphics.printf("press F5 to try again", 240, 565, 700, "left" )
+	else
+		love.graphics.printf("press SPACE to try again", 230, 565, 700, "left" )
+	end
 end
+

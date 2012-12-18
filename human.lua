@@ -1,12 +1,12 @@
 cHuman = CreateClass(cFlockUnit)
 
 function cHuman:Init (x,y)
+	cFlockUnit.Init(self,x,y)
 	self.dead = false
 	self.hp = 10
 	self.ang = 0
 	self.nextBeatTime = frandom(100,400)
-	cFlockUnit.Init(self,x,y)
-	local img = kGfx_Humans[math.random(1,#kGfx_Humans)]
+	local img = kGfx_Humans
 	self.anim = newAnimation(img,20,20,0.5,4)		-- ( image, fw, fh, delay, frames ) 
 end
 
@@ -50,6 +50,7 @@ function cHuman:Draw (dt)
 end 
 
 function cHuman:Step (dt)
+--	print("human")
 	self.ang = SlowTurn(self.ang,math.atan2(self.vy, self.vx),dt * kTurnRate_FlockUnit) 
 	self.anim:update(dt)
 	self:Flock_ResetForce()

@@ -25,6 +25,7 @@ end
 function cCopSquad:WalkToRandomPoint () self:SetTarget({x=frandom(kAreaMinX,kAreaMaxX),y=frandom(kAreaMinY,kAreaMaxY)}) end
 
 function cCopSquad:ThinkStep ()
+--	print("copsquad")
 	local waitt = frandom(2000,5000)
 	if (gIsKillerMode) then waitt = waitt * 0.5 end
 	self.nextthink = gMyTicks + waitt
@@ -32,16 +33,37 @@ function cCopSquad:ThinkStep ()
 	local r_cam = 200
 	local r_human = 300
 	local firstmember = self.members[1]
-	
+
 	if (random() > kCopSquadBeatProb and (not gIsKillerMode)) then self:WalkToRandomPoint() return end
-	
+
 	-- attack some random 
 	local o
-	for i=1,5 do 
-		local a = get_random_from_array(filter_array(gHumans,function (o) return firstmember:GetDistToObj(o) < r_human end))
+	for i=1,5 do
+--		local a = get_random_from_array(filter_array(gHumans,function (o) return firstmember:GetDistToObj(o) < r_human end))
+
+		local array = filter_array(gHumans,function (o) return firstmember:GetDistToObj(o) < r_human end)
+		local a = nil
+		local arraysize = #array
+--		print('arraysize',arraysize)
+		if arraysize > 0 then
+			maxarrayvalue = max(1,arraysize)
+--			print('maxarrayvale',maxarrayvalue)
+			local rand = 0
+			if maxarrayvalue > 1 then
+				rand = random(1,maxarrayvalue)
+			else
+				rand = 1
+			end
+--			print('rand',rand)
+			if rand > 0 then
+				a = array[rand]
+			end
+		end
+
 		if (a and ((not o) or firstmember:GetDistToObj(a) < firstmember:GetDistToObj(o))) then o = a end
 	end
+
 	if (o) then self:SetTarget(o,true) return end
-	
+
 	self:WalkToRandomPoint()
 end

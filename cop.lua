@@ -2,12 +2,12 @@ cCop = CreateClass(cFlockUnit)
 
 function cCop:Init (x,y)
 	cFlockUnit.Init(self,x,y)
-	local img = kGfx_Cop
 	self.dead = false
 	self.hp = 10
 	self.ang = 0
 	self.nextBeatTime = frandom(100,400)
-	self.anim = newAnimation(img,20,20,0.5, 4)		-- ( image, fw, fh, delay, frames ) 
+	local img = kGfx_Cop
+	self.anim = newAnimation(img,20,20,0.5,4)		-- ( image, fw, fh, delay, frames ) 
 end
 
 function cCop:HitMe ()
@@ -34,6 +34,7 @@ function cCop:Draw (dt)
 end 
 
 function cCop:Step (dt)
+--	print("cop")
 	self.ang = SlowTurn(self.ang,math.atan2(self.vy, self.vx),dt * kTurnRate_FlockUnit) 
 	self.anim:update(dt) 
 	self:Flock_ResetForce()
@@ -54,7 +55,6 @@ function cCop:Step (dt)
 		self.nextBeatTime = gMyTicks + frandom(300,600)
 		if (self.bAttack and target and self:GetDistToObj(target) < kCopBeatRange) then 
 			SpawnBeating(target.x,target.y,target)
---			print("Hit")
 			target:HitMe(self)
 		end
 	end

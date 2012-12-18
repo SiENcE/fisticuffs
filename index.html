@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<head>
+<title>Love2D-Webplayer</title>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+
+<link rel="stylesheet" href="../style.css" type="text/css">
+
+<script type="text/javascript" src="../js/lua-parser.js"		></script>
+<script type="text/javascript" src="../js/gamepad.js"      ></script>
+<script type="text/javascript" src="../js/jquery.js"      ></script>
+<script type="text/javascript" src="../js/jquery.hotkeys.js"      ></script>
+<script type="text/javascript" src="../js/utils.js"			></script>
+<script type="text/javascript" src="../js/utils.webgl.js"		></script>
+<script type="text/javascript" src="../js/love.render.js"		></script>
+<script type="text/javascript" src="../js/main.js"      ></script>
+
+<script type="text/javascript" src="../js/love.audio.js"		></script>
+<script type="text/javascript" src="../js/love.event.js"		></script>
+<script type="text/javascript" src="../js/love.filesystem.js"	></script>
+<script type="text/javascript" src="../js/love.font.js"		></script>
+<script type="text/javascript" src="../js/love.graphics.js"	></script>
+<script type="text/javascript" src="../js/love.image.js"		></script>
+<script type="text/javascript" src="../js/love.joystick.js"	></script>
+<script type="text/javascript" src="../js/love.keyboard.js"	></script>
+<script type="text/javascript" src="../js/love.mouse.js"		></script>
+<script type="text/javascript" src="../js/love.physics.js"	></script>
+<script type="text/javascript" src="../js/love.sound.js"		></script>
+<script type="text/javascript" src="../js/love.thread.js"		></script>
+<script type="text/javascript" src="../js/love.timer.js"		></script>
+
+<script type="text/javascript">gShaderCode_Fragment = LoadShaderCode("../js/fragment.shader");</script>
+<script type="text/javascript">gShaderCode_Vertex   = LoadShaderCode("../js/vertex.shader");</script>
+
+</head>
+<body onload="MainOnLoad([
+'gfx/arena.png',
+'gfx/bg2.png',
+'gfx/blood.png',
+'gfx/cgafont.png',
+'gfx/font4.png',
+'gfx/cloud2.png',
+'gfx/cops.png',
+'gfx/deadbody.png',
+'gfx/humans.png',
+'gfx/intro1.png',
+'gfx/intro2.png',
+'gfx/intro3.png',
+'gfx/spruch_meinLeben.png',
+'gfx/spruch_meinLeben.png2',
+'gfx/spruch_meinLeben.png3',
+'gfx/theend.png',
+])">
+<center>
+<div id="output" style="font-family: Courier New,Courier,monospace;font-size: 12px;">
+<b>Fisticuffs</b> - made for Ludum Dare 25 compo 16.12.2012 by <a href="https://twitter.com/crank_gaming">SiENcE</a>
+</div>
+<br>
+<div id="output" style="font-family: Courier New,Courier,monospace;font-size: 11px;">
+Please rate: <a href="http://www.ludumdare.com/compo/ludum-dare-25/?action=preview&uid=10298">http://www.ludumdare.com/compo/ludum-dare-25/?action=preview&uid=10298</a><br>
+</div>
+<br>
+<div id="output" style="font-family: Courier New,Courier,monospace;font-size: 12px;">
+<b>TEAM CONTROLS:</b><br>
+PUSSIES: 'left-alt' or 'space' or left mouse button<br>
+DICKS: 'rshift' or 'return/enter' or right mouse button<br>
+<br>
+</div>
+<canvas id="glcanvas" width="640" height="480">
+Your browser doesn't appear to support the HTML5 <code>&lt;canvas&gt;</code> element.  
+</canvas><br>
+<div id="output" style="font-family: Courier New,Courier,monospace;font-size: 11px;">
+(you need a WebGL compatible Webbrowser (newest Chrome, Firefox, Opera)<br>
+webversion made with <a href="https://github.com/ghoulsblade/love-webplayer">LÖVE-Webplayer</a>
+</div>
+</center>
+</body>
+</html>
