@@ -1,6 +1,5 @@
 cBeatingEffect = CreateClass()
 
-gNextBangT = 0
 function cBeatingEffect:Init (x,y,human)
 	self.x = x 
 	self.y = y 

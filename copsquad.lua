@@ -39,27 +39,25 @@ function cCopSquad:ThinkStep ()
 	-- attack some random 
 	local o
 	for i=1,5 do
---		local a = get_random_from_array(filter_array(gHumans,function (o) return firstmember:GetDistToObj(o) < r_human end))
-
-		local array = filter_array(gHumans,function (o) return firstmember:GetDistToObj(o) < r_human end)
 		local a = nil
-		local arraysize = #array
---		print('arraysize',arraysize)
-		if arraysize > 0 then
-			maxarrayvalue = max(1,arraysize)
---			print('maxarrayvale',maxarrayvalue)
-			local rand = 0
-			if maxarrayvalue > 1 then
-				rand = random(1,maxarrayvalue)
-			else
-				rand = 1
+		if love.web then
+			local array = filter_array(gHumans,function (o) return firstmember:GetDistToObj(o) < r_human end)
+			local arraysize = #array
+			if arraysize > 0 then
+				maxarrayvalue = max(1,arraysize)
+				local rand = 0
+				if maxarrayvalue > 1 then
+					rand = random(1,maxarrayvalue)
+				else
+					rand = 1
+				end
+				if rand > 0 then
+					a = array[rand]
+				end
 			end
---			print('rand',rand)
-			if rand > 0 then
-				a = array[rand]
-			end
+		else
+			a = get_random_from_array(filter_array(gHumans,function (o) return firstmember:GetDistToObj(o) < r_human end))
 		end
-
 		if (a and ((not o) or firstmember:GetDistToObj(a) < firstmember:GetDistToObj(o))) then o = a end
 	end
 

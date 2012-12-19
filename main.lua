@@ -25,7 +25,7 @@ kIntroTime = 6000
 kGameTimeout = 2 * 60*1000 + kIntroTime-2000
 kKillerModeTime = 10*1000
 
-gNextWawawa = 0
+gNextBangT = 0
 
 kScale_FlockUnits	= 3.0
 kTurnRate_FlockUnit	= 0.01 * pi
@@ -91,12 +91,23 @@ function love.load()
 	gMyTicks = gTime * 1000 -- in milliseconds
 	gEndT = gMyTicks + kGameTimeout
 
+	-- Load a font
+	local font4_img = love.graphics.newImage("gfx/font4.png")
+    font4 = love.graphics.newImageFont(font4_img,
+    " abcdefghijklmnopqrstuvwxyz" ..
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ0" ..
+    "123456789.,!?-+/():;%&`'*#=[]\"")
     -- Load a font
 	local cgafont_img = love.graphics.newImage("gfx/cgafont.png")
     gFontCga = love.graphics.newImageFont(cgafont_img,
 	" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_``abcdefghijklmnopqrstuvwxyz{|}~")
-    love.graphics.setFont(gFontCga)
-
+	
+	if love.web then
+		love.graphics.setFont(font4)
+	else
+		love.graphics.setFont(gFontCga)
+	end
+	
 	kSound_stadium1 = love.audio.newSource( "sound/1_Beep.ogg" ) 
 	
 	kSound_meinLeben = love.audio.newSource( "sound/meinleben.ogg" ) 
@@ -134,7 +145,6 @@ function love.load()
 
 	kGfx_Arena	= love.graphics.newImage("gfx/arena.png")
 	kGfx_Cop	= love.graphics.newImage("gfx/cops.png")		
-
 	kGfx_Humans = love.graphics.newImage("gfx/humans.png")
 
 	kGfx_Blood	= love.graphics.newImage("gfx/blood.png")
@@ -150,16 +160,9 @@ function love.load()
 	}
 
 	kGfx_Bang_Flashmob_meinLeben = {
-		love.graphics.newImage("gfx/spruch_meinLeben.png"),
-		love.graphics.newImage("gfx/spruch_meinLeben2.png"),
-		love.graphics.newImage("gfx/spruch_meinLeben.png"),
-		love.graphics.newImage("gfx/spruch_meinLeben2.png"),
-		love.graphics.newImage("gfx/spruch_meinLeben.png"),
-		love.graphics.newImage("gfx/spruch_meinLeben2.png"),
-		love.graphics.newImage("gfx/spruch_meinLeben.png"),
-		love.graphics.newImage("gfx/spruch_meinLeben2.png"),
-		love.graphics.newImage("gfx/spruch_meinLeben.png"),
-		love.graphics.newImage("gfx/spruch_meinLeben3.png")
+		love.graphics.newImage("gfx/meinLeben.png"),
+		love.graphics.newImage("gfx/meinLeben2.png"),
+		love.graphics.newImage("gfx/meinLeben3.png")
 	}
 
 	kGfx_Cloud = love.graphics.newImage("gfx/cloud2.png")
@@ -229,11 +232,9 @@ function SpawnBeating (x,y,target)
 	MakeBeatingEffect(x,y,target)
 end
 
-function MakeRiseIcon_CamBroke	(x,y) return MakeRiseIcon(x,y,{img=kGfx_CamBroke,maxt=1500,riseh=-80}) end
-
 function MakeBang_meinLeben		(x,y) 
-	gRandomLeben=random(10)
-	return MakeRiseIcon(x,y,{img=kGfx_Bang_Flashmob_meinLeben[gRandomLeben],maxt=500,riseh=0,s=kScale_Point})
+	local randomLeben=random(#kGfx_Bang_Flashmob_meinLeben)
+	return MakeRiseIcon(x,y,{img=kGfx_Bang_Flashmob_meinLeben[randomLeben],maxt=500,riseh=0,s=kScale_Point})
 end
 
 gNextBeatingTimeoutCheck = 0
@@ -241,12 +242,17 @@ gNextRiseIconTimeoutCheck = 0
 gNextNewCrowdPointT = 0
 gStartIngameMusic = false
 
+zTime=nil
 function love.update(dt)
-	gTime = love.timer.getTime() -- in seconds
+	if not zTime then zTime=love.timer.getTime() end
+	gTime = love.timer.getTime() - zTime -- in seconds
 	gMyTicks = gTime * 1000 -- in milliseconds
---	print("gMyTicks",gMyTicks)
 
 	local timeleft = gEndT - gMyTicks
+
+--gMyTicks        5123.0001449585 gEndT   127003.9999485  timeleft 121880.99980354 kIntroTime      6000
+--gMyTicks	   1355775789801      gEndT   1355775913699   timeleft 123898          kIntroTime 6000
+--	print("gMyTicks",gMyTicks, "gEndT", gEndT, "timeleft", timeleft, "kIntroTime", kIntroTime)
 
 	if (not gGameStarted) then timeleft = kIntroTime*1000 end
 
@@ -257,7 +263,7 @@ function love.update(dt)
 	if not gGameStarted then 
 		gGameStarted = true
 		--start music
-		TEsound.playLooping("sound/2_crowd.ogg", "backmusic", 200, 2.0)
+		TEsound.playLooping("sound/2_crowd.ogg", "backmusic", 200, 1.0)
 		gEndT = gMyTicks + kGameTimeout
 	end
 
@@ -271,12 +277,6 @@ function love.update(dt)
 		love.audio.play(kSound_stadium1)
 		gStartIngameMusic = true
 	end
-
-	-- wawawa
---	if (gMyTicks > gNextWawawa) then
---		gNextWawawa = gMyTicks + frandom(500,3000)
---		love.audio.play(get_random_from_array(kSound_Wawawa))
---	end
 
 	for k,o in pairs(gCops) do o:Step(dt) end
 	for k,o in pairs(gCopSquads) do o:Step(dt) end
@@ -342,13 +342,21 @@ function love.draw()
 	--draw Arena
 	love.graphics.draw(kGfx_Arena)
 
-	local timeleft = max(0,gEndT - gMyTicks)
-	local seconds = mod(floor(timeleft/1000),60)
-	local minutes = floor(timeleft/1000/60)
-	local timetext = sprintf("Time: %d:%02d",minutes,seconds)
-	love.graphics.setColor(254,254,254,255)
-	love.graphics.print(timetext, 10, 2 )
-	love.graphics.setColor(255,255,255,255)
+	if love.web then
+		local timeleft = max(0,gEndT - gMyTicks)
+		local seconds = math.fmod(floor(timeleft/1000),60) --mod(floor(timeleft/1000),60)
+		local minutes = floor(timeleft/1000/60)
+		local timetext = "Time: " .. minutes .. ":" .. seconds
+		love.graphics.print(timetext, 20, 2 )
+	else
+		local timeleft = max(0,gEndT - gMyTicks)
+		local seconds = mod(floor(timeleft/1000),60)
+		local minutes = floor(timeleft/1000/60)
+		local timetext = sprintf("Time: %d:%02d",minutes,seconds)
+		love.graphics.setColor(254,254,254,255)
+		love.graphics.print(timetext, 10, 2 )
+		love.graphics.setColor(255,255,255,255)
+	end
 end
 
 function GameOver_Update(dt)
@@ -358,6 +366,8 @@ function GameOver_Update(dt)
 			TEsound.stop("backmusic")
 			gIntro = true
 			gGameStarted=false
+			gStartIngameMusic = false
+			gNextBangT = 0
 			love.filesystem.load("main.lua")() 
 		end
 	end
@@ -368,23 +378,30 @@ function GameOver_Draw()
 	love.graphics.draw(kGfx_Endscreen)
 
 	local text = ""
-	local x=200
+	local x=210
 	if gDeadCops > gDeadHumans then
 		text = "Pussies won! You killed " .. gDeadCops .. " Dicks."
 	elseif gDeadHumans == gDeadCops then
 		text = "The game ended in a draw. You are all Pussies ;-)"
-		x=x-20
+		if love.web then
+			x=x-20
+		else
+			x=x-190
+		end
 	else
 		text = "Dicks won! You killed " .. gDeadHumans .. " pussies."
 	end
 
-	love.graphics.setColor(1,1,1,255)
-	love.graphics.printf(text, x, 545, 700, "left" )
-	love.graphics.setColor(255,255,255,255)
 	if love.web then
-		love.graphics.printf("press F5 to try again", 240, 565, 700, "left" )
+		love.graphics.setColor(255,128,128,255)
+		love.graphics.printf(text, x, 545, 700, "left" )
+		love.graphics.setColor(255,255,255,255)
+		love.graphics.printf("press F5 to try again", 250, 565, 700, "left" )
 	else
-		love.graphics.printf("press SPACE to try again", 230, 565, 700, "left" )
+		love.graphics.setColor(1,1,1,255)
+		love.graphics.printf(text, x-10, 545, 800, "left" )
+		love.graphics.setColor(1,1,1,255)
+		love.graphics.printf("press SPACE to try again", 250, 565, 700, "left" )
+		love.graphics.setColor(255,255,255,255)
 	end
 end
-
